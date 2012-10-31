@@ -3,12 +3,12 @@ require 'base64'
 require 'openssl'
 require 'cgi'
 
-S3_KEY='S3 key here'
-S3_SECRET='S3 secret here'
-S3_BUCKET='/uploadtestbucket'
+S3_KEY    = ENV['AWS_ACCESS_KEY']
+S3_SECRET = ENV['AWS_SECRET']
+S3_BUCKET = "/#{ENV['AWS_S3_BUCKET_NAME']}"
 
-EXPIRE_TIME=(60 * 5) # 5 minutes
-S3_URL='http://s3.amazonaws.com'
+EXPIRE_TIME = (60 * 5) # 5 minutes
+S3_URL      = 'http://s3.amazonaws.com'
 
 get '/' do
   send_file 'index.html'
