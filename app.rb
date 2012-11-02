@@ -31,7 +31,7 @@ post '/encode/:filename' do
   file = params['filename']
   uuid = file.split(".").first
 
-  encode_request = JSON.encode(
+  encode_request =
   {
     input: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{file}",
     outputs: [
@@ -109,7 +109,7 @@ post '/encode/:filename' do
         url: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{uuid}/playlist.m3u8"
       }
     ]
-  })
+  }.to_json
 
   Typhoeus::Request.post("https://app.zencoder.com/api/v2/jobs", :headers => { "Zencoder-Api-Key" => ENV['ZENCODER_API_KEY'] }, :body => encode_request)
 end
