@@ -1,3 +1,4 @@
+require 'typhoeus'
 require 'sinatra'
 require 'base64'
 require 'openssl'
