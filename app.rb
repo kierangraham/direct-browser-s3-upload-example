@@ -31,7 +31,7 @@ post '/encode/:filename' do
 
   encode_request =
   {
-    input: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{filename}",
+    input: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{file}",
     outputs: [
       {
         label: "low",
