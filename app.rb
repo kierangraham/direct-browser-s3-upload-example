@@ -112,8 +112,8 @@ post '/upload/complete/:name' do
     notifications: [
     "#{ZENCODER_NOTIFY_EMAIL}",
     {
-      "format": "json",
-      "url": "#{ZENCODER_NOTIFY_URL}"
+      format: "json",
+      url: "#{ZENCODER_NOTIFY_URL}"
     }
   ],
   }.to_json
