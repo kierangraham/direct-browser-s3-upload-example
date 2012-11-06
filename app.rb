@@ -127,7 +127,7 @@ end
 # Transcoding Complete
 post '/transcoding/complete' do
   STDERR.puts "TRANSCODING COMPLETE => ZENCODER RESPONSE:"
-  STDERR.puts request.body
+  STDERR.puts request.body.read
 end
 
 get '/' do
