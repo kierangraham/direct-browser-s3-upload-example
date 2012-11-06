@@ -110,12 +110,12 @@ post '/upload/complete/:name' do
       }
     ],
     notifications: [
-    "#{ZENCODER_NOTIFY_EMAIL}",
-    {
-      format: "json",
-      url: "#{ZENCODER_NOTIFY_URL}"
-    }
-  ],
+      "#{ZENCODER_NOTIFY_EMAIL}",
+      {
+        format: "json",
+        url: "#{ZENCODER_NOTIFY_URL}"
+      }
+    ]
   }.to_json
 
   response = Typhoeus::Request.post("https://app.zencoder.com/api/v2/jobs", :headers => { "Zencoder-Api-Key" => ENV['ZENCODER_API_KEY'] }, :body => encode_request)
