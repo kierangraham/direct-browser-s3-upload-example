@@ -27,8 +27,8 @@ get '/signput' do
 end
 
 # Upload Complete
-post '/encode/:filename' do
-  file = params['filename']
+post '/upload/complete/:name' do
+  file = params['name']
   uuid = file.split(".").first
 
   encode_request =
@@ -108,10 +108,26 @@ post '/encode/:filename' do
         type: "playlist",
         url: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{uuid}/playlist.m3u8"
       }
-    ]
+    ],
+    notifications: [
+    "#{ZENCODER_NOTIFY_EMAIL}",
+    {
+      "format": "json",
+      "url": "#{ZENCODER_NOTIFY_URL}"
+    }
+  ],
   }.to_json
 
-  Typhoeus::Request.post("https://app.zencoder.com/api/v2/jobs", :headers => { "Zencoder-Api-Key" => ENV['ZENCODER_API_KEY'] }, :body => encode_request)
+  response = Typhoeus::Request.post("https://app.zencoder.com/api/v2/jobs", :headers => { "Zencoder-Api-Key" => ENV['ZENCODER_API_KEY'] }, :body => encode_request)
+
+  STDERR.puts "UPLOAD COMPLETE => ZENCODER RESPONSE:"
+  STDERR.puts response.body
+end
+
+# Transcoding Complete
+post '/transcoding/complete' do
+  STDERR.puts "TRANSCODING COMPLETE => ZENCODER RESPONSE:"
+  STDERR.puts request.body
 end
 
 get '/' do
