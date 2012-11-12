@@ -113,6 +113,7 @@ post '/upload/complete/:name' do
           {
             public: 1,
             number: 1,
+            label: "288x162",
             size: "288x162",
             aspect_mode: "crop",
             input: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{file}",
@@ -122,6 +123,7 @@ post '/upload/complete/:name' do
           {
             public: 1,
             number: 1,
+            label: "144x81",
             size: "144x81",
             aspect_mode: "crop",
             input: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{file}",
