@@ -107,6 +107,17 @@ post '/upload/complete/:name' do
         ],
         type: "playlist",
         url: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{uuid}/playlist.m3u8"
+      },
+      {
+        thumbnails: {
+          public: 1,
+          number: 1,
+          size: "288x162",
+          aspect_mode: "crop",
+          input: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{file}",
+          base_url: "s3://#{ENV['AWS_S3_BUCKET_NAME']}/#{uuid}/",
+          filename: "thumb_{{width}}x{{height}}"
+        }
       }
     ],
     notifications: [
