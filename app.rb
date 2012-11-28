@@ -14,6 +14,8 @@ S3_URL      = 'http://s3.amazonaws.com'
 
 # S3 Signing
 get '/signput' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+
   objectName = "/#{params['name']}"
 
   mimeType = params['type']
@@ -27,6 +29,8 @@ get '/signput' do
 end
 
 get '/signpost' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+
   objectName = "/#{params['name']}"
 
   mimeType = params['type']
@@ -41,6 +45,8 @@ end
 
 # Upload Complete
 post '/upload/complete/:name' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+
   file = params['name']
   uuid = file.split(".").first
 
@@ -163,18 +169,8 @@ end
 
 # Transcoding Complete
 post '/transcoding/complete' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+
   STDERR.puts "TRANSCODING COMPLETE => ZENCODER RESPONSE:"
   STDERR.puts request.body.read
-end
-
-get '/' do
-  send_file 'index.html'
-end
-
-get '/styles.css' do
-  send_file 'styles.css'
-end
-
-get '/app.js' do
-  send_file 'app.js'
 end
