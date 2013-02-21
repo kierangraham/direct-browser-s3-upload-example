@@ -7,9 +7,10 @@ require 'json'
 
 S3_KEY    = ENV['AWS_ACCESS_KEY']
 S3_SECRET = ENV['AWS_SECRET']
-S3_BUCKET = "/#{ENV['AWS_S3_BUCKET_NAME']}"
+S3_BUCKET = ENV['AWS_S3_BUCKET_NAME']
 
-EXPIRE_TIME = (60 * 5) # 5 minutes
+EXPIRE_TIME = 5 * 60 # 5 minutes
+S3_HOST     = 's3.amazonaws.com'
 S3_URL      = 'http://s3.amazonaws.com'
 
 # S3 Signing
@@ -32,15 +33,18 @@ get '/signpost' do
   response.headers["Access-Control-Allow-Origin"] = "*"
 
   objectName = "/#{params['name']}"
+  now = Time.now.httpdate
 
-  mimeType = params['type']
-  expires = Time.now.to_i + EXPIRE_TIME
+  amzHeaders   = "x-amz-date:#{now}"
+  stringToSign = "POST\n\n\n\n#{amzHeaders}\n/#{S3_BUCKET}#{objectName}?uploads";
+  sig          = (Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', S3_SECRET, stringToSign)))
 
-  amzHeaders = "x-amz-acl:public-read"
-  stringToSign = "POST\n\n#{mimeType}\n#{expires}\n#{amzHeaders}\n#{S3_BUCKET}#{objectName}";
-  sig = CGI::escape(Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', S3_SECRET, stringToSign)))
-
-  CGI::escape("#{S3_URL}#{S3_BUCKET}#{objectName}?AWSAccessKeyId=#{S3_KEY}&Expires=#{expires}&Signature=#{sig}")
+  {
+    url:        "http://#{S3_BUCKET}.#{S3_HOST}#{objectName}",
+    signature:  sig,
+    access_key: ENV['AWS_ACCESS_KEY'],
+    date:       now
+  }.to_json
 end
 
 # Upload Complete

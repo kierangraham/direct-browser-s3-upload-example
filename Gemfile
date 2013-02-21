@@ -1,3 +1,5 @@
 source 'http://rubygems.org'
 gem 'sinatra'
 gem 'typhoeus'
+gem 'rerun'
+gem 'rb-fsevent', '~> 0.9.1'
