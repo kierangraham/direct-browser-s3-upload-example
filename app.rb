@@ -35,7 +35,7 @@ get '/signpost' do
   objectName = "/#{params['name']}"
   now = Time.now.httpdate
 
-  amzHeaders   = "x-amz-date:#{now}"
+  amzHeaders   = "x-amz-acl:public-read\nx-amz-date:#{now}"
   stringToSign = "POST\n\n\n\n#{amzHeaders}\n/#{S3_BUCKET}#{objectName}?uploads";
   sig          = (Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', S3_SECRET, stringToSign)))
 
@@ -44,6 +44,50 @@ get '/signpost' do
     signature:  sig,
     access_key: ENV['AWS_ACCESS_KEY'],
     date:       now
+  }.to_json
+end
+
+get '/signpart' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+
+  part     = params['part']
+  uploadId = params['upload_id']
+  size     = params['size']
+
+  objectName = "/#{params['name']}"
+  now = Time.now.httpdate
+
+  amzHeaders   = "x-amz-date:#{now}"
+  stringToSign = "PUT\n\n\n\n#{amzHeaders}\n/#{S3_BUCKET}#{objectName}?partNumber=#{part}&uploadId=#{uploadId}"
+
+  sig          = (Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', S3_SECRET, stringToSign)))
+
+  {
+    url:        "http://#{S3_BUCKET}.#{S3_HOST}#{objectName}?partNumber=#{part}&uploadId=#{uploadId}",
+    signature: sig,
+    access_key: ENV['AWS_ACCESS_KEY'],
+    date: now
+  }.to_json
+end
+
+get '/signcomplete' do
+  response.headers["Access-Control-Allow-Origin"] = "*"
+
+  uploadId = params['upload_id']
+
+  objectName = "/#{params['name']}"
+  now = Time.now.httpdate
+
+  amzHeaders   = "x-amz-date:#{now}"
+  stringToSign = "POST\n\napplication/xml\n\n#{amzHeaders}\n/#{S3_BUCKET}#{objectName}?uploadId=#{uploadId}"
+
+  sig          = (Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', S3_SECRET, stringToSign)))
+
+  {
+    url:        "http://#{S3_BUCKET}.#{S3_HOST}#{objectName}?uploadId=#{uploadId}",
+    signature: sig,
+    access_key: ENV['AWS_ACCESS_KEY'],
+    date: now
   }.to_json
 end
 
