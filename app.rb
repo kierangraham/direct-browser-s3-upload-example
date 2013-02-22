@@ -83,17 +83,22 @@ get '/signcomplete' do
 
   sig          = (Base64.strict_encode64(OpenSSL::HMAC.digest('sha1', S3_SECRET, stringToSign)))
 
-  {
+  response = {
     url:        "http://#{S3_BUCKET}.#{S3_HOST}#{objectName}?uploadId=#{uploadId}",
     signature: sig,
     access_key: ENV['AWS_ACCESS_KEY'],
     date: now
-  }.to_json
+  }
+  puts response
+
+  response.to_json
 end
 
 # Upload Complete
 post '/upload/complete/:name' do
   response.headers["Access-Control-Allow-Origin"] = "*"
+
+  return
 
   file = params['name']
   uuid = file.split(".").first
